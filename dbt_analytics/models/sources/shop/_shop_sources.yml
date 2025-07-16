@@ -1,0 +1,56 @@
+version: 2
+
+sources:
+  - name: order_gcp_source
+    database: general-rhythmix-playground
+    schema: order_refactoring
+    tables:
+      - name: customers
+        external:
+          location: 'gs://rhythmix_dbt/classic_raw/jaffle_shop_customers.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: integer
+            description: Unique UUID of the customer
+            tests:
+              - unique
+              - not_null
+          - name: first_name
+            data_type: string
+            description: The first name of the customer
+          - name: last_name
+            data_type: string
+            description: The last name of the customer
+      - name: orders
+        external:
+          location: 'gs://rhythmix_dbt/classic_raw/jaffle_shop_orders.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: integer
+            description: The id number of the order
+            tests:
+              - unique
+              - not_null
+          - name: user_id
+            data_type: integer
+            description: The id of the user who placed the order
+            tests:
+              - not_null
+          - name: order_date
+            data_type: date
+            description: The date on which the order was placed
+            tests:
+              - not_null
+          - name: status
+            data_type: string
+            description: The status of the order
+            tests:
+              - accepted_values:
+                  values: ['returned', 'completed', 'return_pending', 'shipped', 'placed']
+      

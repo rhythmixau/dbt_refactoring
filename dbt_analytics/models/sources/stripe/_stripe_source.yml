@@ -1,0 +1,44 @@
+version: 2
+
+sources:
+  - name: stripe_gcp_source
+    database: general-rhythmix-playground
+    schema: stripe_refactoring
+    tables:
+      - name: payments
+        external:
+          location: 'gs://rhythmix_dbt/classic_raw/stripe_payments.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: integer
+            description: Unique UUID of the payment transaction
+            tests:
+              - unique
+              - not_null
+          - name: orderid
+            data_type: integer
+            description: Corresponding order id
+            tests:
+              - not_null
+          - name: paymentmethod
+            data_type: string
+            description: The payment method
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
+          - name: status
+            data_type: string
+            description: The status of the payment transaction
+            tests:
+              - accepted_values:
+                  values: ['fail', 'success']
+          - name: amount
+            data_type: integer
+            description: The amount paid in cents
+          - name: created
+            data_type: date
+            description: The date the payment transaction was created
