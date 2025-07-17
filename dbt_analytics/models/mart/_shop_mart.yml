@@ -1,0 +1,121 @@
+version: 2
+
+models:
+  - name: customer_order_history
+    description: Customers order history records
+    columns:
+      - name: customer_id
+        description: The unique identifier of a customer
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: full_name
+        description: The full name of the customer
+      - name: surname
+        description: The last name or surname of the customer
+      - name: givenname
+        description: The first name or given name of the customer
+      - name: first_order_date
+        description: The date on which the customer placed their first order
+      - name: first_non_returned_order_date
+        description: The date on which the customer placed their first successful order (i.e. none-returned or none-failed payment) o
+      - name: most_recent_non_returned_order_date
+        description: The most recent date the customer placed their order
+      - name: order_count
+        description: The number of orders the customer has already placed
+      - name: non_returned_order_count
+        description: The number of successful orders
+      - name: total_lifetime_value
+        description: The total amount of business has been received by each 
+      - name: avg_non_returned_order_value
+        description: The averaged value of successful full orders
+      - name: order_ids
+        description: The unique identifiers of all the orders placed by customers
+
+  - name: customer_orders_agg
+    description: The aggregated summary of all the orders by customers
+    columns:
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: first_order_date
+        description: The date of the first order
+      - name: most_recent_order_date
+        description: The date of the most recent order
+      - name: number_of_orders
+        description: The total number of orders
+  - name: customer_paid_orders
+    description: The payment records of the customer
+    columns:
+      - name: order_id
+        description: The unique identifier of the order
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: order_placed_at
+        description: The date which the order was placed
+      - name: order_status
+        description: The status of the order
+      - name: total_amount_paid
+        description: The total amount paid
+      - name: payment_finalized_date
+        description: The date the payment was finalised
+      - name: customer_first_name
+        description: The first name of the customer
+      - name: customer_last_name
+        description: The last name of the customer
+  - name: fct_customer_orders2
+    description: The order records of customers (version 2)
+    columns:
+      - name: order_id
+        description: The unique identifier of the order
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: order_placed_at
+        description: The date which the order was placed
+      - name: order_status
+        description: The status of the order
+      - name: total_amount_paid
+        description: The total amount paid
+      - name: payment_finalized_date
+        description: The date the payment was finalised
+      - name: customer_first_name
+        description: The first name of the customer
+      - name: customer_last_name
+        description: The last name of the customer
+      - name: transaction_seq
+        description: The transaction sequence
+      - name: customer_sales_seq
+        description: The customer sale sequence per customer
+      - name: nvsr
+        description: The category of the customer, indicating if the customer if the first time buyer or is it a returning customer
+      - name: customer_lifetime_value
+        description: The total business value of the customer
+      - name: fdos
+        description: The date of the first order
+  - name: fct_customer_orders
+    description: The order records of customer (version 1)
+    columns:
+      - name: order_id
+        description: The unique identifier of the order
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: full_name
+        description: The full name of the customer
+      - name: surname
+        description: The surname of the customer
+      - name: givenname
+        description: The given name of the customer
+      - name: first_order_date
+        description: The date of the first time the customer placed the order
+      - name: order_count
+        description: The total number of orders
+      - name: total_lifetime_value
+        description: The total value of all the orders in cents
+      - name: order_value_dollars
+        description: The total value of all the orders in dollars
+      - name: order_status
+        description: The status of the order
+      - name: payment_status
+        description: The payment status of the order
+        
