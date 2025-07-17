@@ -16,19 +16,19 @@ payments AS (
 ), final AS (
     select 
     orders.order_id,
-    orders.user_id as customer_id,
-    full_name,
-    surname,
-    givenname,
-    first_order_date,
-    order_count,
-    total_lifetime_value,
-    round(payment_amount/100.0,2) as order_value_dollars,
+    orders.customer_id,
+    customers.full_name,
+    customers.surname,
+    customers.givenname,
+    h.first_order_date,
+    h.order_count,
+    h.total_lifetime_value,
+    round(payments.payment_amount/100.0,2) as order_value_dollars,
     orders.order_status,
     payments.payment_status
 from orders 
-join customers on orders.user_id = customers.customer_id
-join customer_purchase_history h on orders.user_id = h.customer_id
+join customers on orders.customer_id = customers.customer_id
+join customer_purchase_history h on orders.customer_id = h.customer_id
 left outer join payments on orders.order_id = payments.order_id
 where payments.payment_status != 'fail'
 )
