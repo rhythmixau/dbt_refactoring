@@ -57,6 +57,5 @@ final AS (
 from order_values v
 join customers c on v.customer_id = c.customer_id
 join customer_purchase_history h on v.customer_id = h.customer_id
-left outer join payments p on v.order_id = p.order_id
 )
 SELECT * FROM final
