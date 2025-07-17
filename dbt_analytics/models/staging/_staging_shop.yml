@@ -23,7 +23,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: user_id
+      - name: customer_id
         description: The corresponding user's id who placed the order
         tests:
           - relationships:
