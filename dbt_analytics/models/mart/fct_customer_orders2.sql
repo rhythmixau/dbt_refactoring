@@ -23,7 +23,10 @@ final AS (
         ROW_NUMBER() OVER (ORDER BY p.order_id) as transaction_seq,
         ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY p.order_id) as customer_sales_seq,
         CASE 
-            WHEN c.first_order_date = p.order_placed_at THEN 'new'
+            WHEN ( RANK() OVER(
+                PARTITION BY c.customer_id 
+                ORDER BY p.order_placed_at, p.order_id
+            ) = 1 ) THEN 'new'
             ELSE 'return' 
         END as nvsr,
         clv.clv_bad as customer_lifetime_value,
