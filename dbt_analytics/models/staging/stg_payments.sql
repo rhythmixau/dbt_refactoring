@@ -3,7 +3,7 @@ SELECT
     orderid AS order_id,
     paymentmethod AS payment_method,
     status AS payment_status,
-    amount AS payment_amount,
+    {{ cents_to_dollars('amount') }} AS payment_amount,
     created AS payment_date
 FROM 
     {{ source('stripe_gcp_source', 'payments') }}

@@ -8,7 +8,7 @@ agg_payments AS (
     select 
         order_id, 
         max(payment_date) as payment_finalized_date, 
-        sum(payment_amount) / 100.0 as total_amount_paid
+        sum(payment_amount) as total_amount_paid
     from {{ ref('stg_payments') }}
         where payment_status <> 'fail'
         group by 1
