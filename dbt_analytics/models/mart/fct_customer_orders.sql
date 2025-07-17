@@ -35,7 +35,7 @@ order_values AS (
     SELECT 
         o.order_id, 
         o.customer_id,
-        ROUND(p.order_value/100.0, 2) order_value_dollars,
+        ROUND(p.order_value, 2) order_value_dollars,
         o.order_status,
         p.payment_status
     FROM orders o
