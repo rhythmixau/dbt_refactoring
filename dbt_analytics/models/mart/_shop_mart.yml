@@ -3,6 +3,8 @@ version: 2
 models:
   - name: customer_order_history
     description: Customers order history records
+    config:
+      materialized: ephemeral
     columns:
       - name: customer_id
         description: The unique identifier of a customer
@@ -36,6 +38,8 @@ models:
 
   - name: customer_orders_agg
     description: The aggregated summary of all the orders by customers
+    config:
+      materialized: ephemeral
     columns:
       - name: customer_id
         description: The unique identifier of the customer
@@ -47,6 +51,8 @@ models:
         description: The total number of orders
   - name: customer_paid_orders
     description: The payment records of the customer
+    config:
+      materialized: ephemeral
     columns:
       - name: order_id
         description: The unique identifier of the order
