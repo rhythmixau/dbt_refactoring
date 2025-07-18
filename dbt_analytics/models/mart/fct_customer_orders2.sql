@@ -1,3 +1,21 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='order_id',
+        incremental_strategy='append'
+    )
+}}
+-- incremental_strategy = 'append|merge|delete+insert|upsert|insert_overwrite'
+--                        insert_overwrite
+
+-- more efficient on BigQuery
+-- config(
+--         materialized='incremental',
+--         unique_key='order_id',
+--         partition_by={"field": "order_date", "data_type": "date", "granularity": "day"}
+--         incremental_strategy='insert_overwrite'
+--     )
+
 WITH paid_orders as (
     select 
         *
@@ -30,10 +48,16 @@ final AS (
             ELSE 'return' 
         END as nvsr,
         clv.clv_bad as customer_lifetime_value,
-        c.first_order_date as fdos
+        c.first_order_date as fdos,
+        CURRENT_TIMESTAMP as updated_at
     FROM paid_orders p
         left join customer_orders as c USING (customer_id)
         LEFT OUTER JOIN customer_livetime_values clv on clv.order_id = p.order_id
     ORDER BY order_id
 )
 SELECT * FROM final
+{% if is_incremental() %}
+    -- this filter will only be applied on an incremental run
+    WHERE order_placed_at > (SELECT MAX(order_placed_at) FROM {{ this }}) 
+{% endif %}
+ORDER BY order_placed_at DESC
