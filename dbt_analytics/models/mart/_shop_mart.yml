@@ -99,6 +99,8 @@ models:
         description: The total business value of the customer
       - name: fdos
         description: The date of the first order
+      - name: updated_at
+        description: The date at which the record was inserted or updated
   - name: fct_customer_orders
     description: The order records of customer (version 1)
     columns:
@@ -124,4 +126,5 @@ models:
         description: The status of the order
       - name: payment_status
         description: The payment status of the order
+  
         
