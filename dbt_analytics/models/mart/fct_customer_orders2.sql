@@ -1,20 +1,3 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key='order_id',
-        incremental_strategy='append'
-    )
-}}
--- incremental_strategy = 'append|merge|delete+insert|upsert|insert_overwrite'
---                        insert_overwrite
-
--- more efficient on BigQuery
--- config(
---         materialized='incremental',
---         unique_key='order_id',
---         partition_by={"field": "order_date", "data_type": "date", "granularity": "day"}
---         incremental_strategy='insert_overwrite'
---     )
 
 WITH paid_orders as (
     select 
@@ -56,8 +39,4 @@ final AS (
     ORDER BY order_id
 )
 SELECT * FROM final
-{% if is_incremental() %}
-    -- this filter will only be applied on an incremental run
-    WHERE order_placed_at > (SELECT MAX(order_placed_at) FROM {{ this }}) 
-{% endif %}
 ORDER BY order_placed_at DESC
