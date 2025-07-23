@@ -1,0 +1,46 @@
+# semantic_models:
+#   - name: sem_fct_orders
+#     description: semantic model for fct_orders
+#     model: ref('fct_orders')
+#     defaults:
+#       agg_time_dimension: order_date
+#     entities:
+#       - name: order_id
+#         type: primary
+#       - name: customer_id
+#         type: foreign
+#     dimensions:
+#       - name: order_date
+#         type: time
+#         type_params:
+#           time_granularity: day
+#     measures:
+#       - name: amount
+#         description: amount paid in each order
+#         agg: sum
+
+# metrics:
+#   - name: "order_total"
+#     description: "Sum of orders value"
+#     type: simple
+#     label: "order_total"
+#     type_params:
+#       measure:
+#         name: amount
+#   - name: large_orders
+#     description: "Count of orders with order total over 20."
+#     type: simple
+#     label: "Larger Orders"
+#     type_params:
+#       measure:
+#         name: amount
+#     filter: |
+#       {{ Metric('order_total', group_by=['order_id']) }} >= 20
+#   - name: "cumulative_order_amount_mtd"
+#     label: "cumulative_order_amount_mtd"
+#     description: "The month to date value of all orders"
+#     type: cumulative
+#     type_params:
+#       measure:
+#         name: amount
+#       grain_to_date: month

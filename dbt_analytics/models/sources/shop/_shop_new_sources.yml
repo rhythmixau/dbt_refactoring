@@ -1,0 +1,193 @@
+version: 2
+
+sources:
+  - name: order_gcp_new_source
+    database: general-rhythmix-playground
+    schema: order_refactoring
+    tables:
+      - name: raw_customers
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_customers.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: string
+            description: Unique UUID of the customer
+            tests:
+              - unique
+              - not_null
+          - name: name
+            data_type: string
+            description: The full-name of the customer
+      
+      - name: raw_orders
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_orders.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "subtotal + tax_paid = order_total"
+        columns:
+          - name: id
+            data_type: string
+            description: The unique identifier (UUID) of the order
+            tests:
+              - not_null
+              - unique
+          - name: customer
+            data_type: string
+            description: The foreign key and unique identifier (UUID) of the customer
+            tests:
+              - not_null
+          - name: ordered_at
+            data_type: datetime
+            description: The date at which the order was placed
+            tests:
+              - not_null
+          - name: store_id
+            data_type: string
+            description: The foreign key and unique identifier of the store
+            tests:
+              - not_null
+          - name: subtotal
+            data_type: integer
+            description: The cost of the items purchased
+            tests:
+              - not_null
+              - dbt_utils.expression_is_true:
+                  expression: ">=0"
+          - name: tax_paid	
+            data_type: integer
+            description: The amount of tax to be included in this transaction
+            tests:
+              - not_null
+              - dbt_utils.expression_is_true:
+                  expression: ">=0"
+          - name: order_total
+            data_type: integer
+            description: The sum of the order subtotal and tax
+            tests:
+              - not_null
+      - name: raw_products
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_products.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: sku
+            data_type: string
+            description: The product sku
+            tests:
+              - unique
+              - not_null
+          - name: name
+            data_type: string
+            description: The name of the product
+            tests:
+              - not_null
+          - name: type
+            data_type: string
+            description: The product category or type
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['jaffle', 'beverage']
+          - name: price
+            data_type: integer
+            description: The price of the product
+            tests:
+              - not_null
+              - dbt_utils.expression_is_true:
+                  expression: ">=0"
+          - name: description
+            data_type: string
+            description: The description of the product
+            tests:
+              - not_null
+              - dbt_utils.not_empty_string
+      - name: raw_stores
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_stores.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: string
+            description: The unique identifier of the shop
+            tests:
+              - unique
+              - not_null
+          - name: name
+            data_type: string
+            description: The name of the city where the store is located
+            tests:
+              - not_null
+              - dbt_utils.not_empty_string
+          - name: opened_at
+            data_type: datetime
+            description: The date on which the store was opened
+            tests:
+              - not_null
+          - name: tax_rate
+            data_type: decimal
+            description: The tax rate which is applied on every purchase
+            tests:
+              - not_null
+      - name: raw_supplies
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_supplies.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: string
+            description: The unique identifier of the supply
+            tests:
+              - not_null
+              - unique
+          - name: name
+            data_type: string
+            description: The name of the supply
+            tests:
+              - not_null
+          - name: cost
+            data_type: integer
+            description: The cost of the supply
+            tests:
+              - not_null
+          - name: perishable
+            data_type: boolean
+            description: Whether or not the supply is perishable
+          - name: sku
+            data_type: string
+            description: The sku of the supply
+      - name: raw_items
+        external:
+          location: 'gs://rhythmix_dbt/raw/raw_items.csv'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns:
+          - name: id
+            data_type: string
+            description: The unique identifier of the order line
+            tests:
+              - unique
+              - not_null
+          - name: order_id
+            data_type: string
+            description: The foreign key order unique identifier
+            tests:
+              - not_null
+          - name: sku
+            data_type: string
+            description: The sku code of the item
+            tests:
+              - not_null

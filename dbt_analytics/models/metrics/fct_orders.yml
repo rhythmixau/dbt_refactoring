@@ -1,0 +1,67 @@
+semantic_models:
+  - name: orders
+    model: ref('fct_new_orders')
+
+    entities:
+      - name: order_id
+        type: primary
+        expr: order_id
+
+    dimensions:
+      - name: ordered_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: is_drink_order
+        type: categorical
+
+    measures:
+      - name: order_total
+        description: The total amount for each order including taxes
+        agg: sum
+        expr: order_total
+        agg_time_dimension: ordered_at
+      - name: customers_with_orders
+        description: Distinct count of customers placing orders
+        agg: count_distinct
+        expr: customer_id
+        agg_time_dimension: ordered_at
+      - name: min_order_value
+        agg: min
+        expr: order_total
+        agg_time_dimension: ordered_at
+      - name: max_order_value
+        agg: max
+        expr: order_total
+        agg_time_dimension: ordered_at
+      - name: avg_order_value
+        agg: average
+        expr: order_total
+        agg_time_dimension: ordered_at
+      - name: order_cost
+        expr: order_cost
+        description: The cost of each order item.  Cost is calculated as a sum of supply cost for each order.
+        agg: sum
+        agg_time_dimension: ordered_at
+
+metrics:
+  - name: "avg_order_value"
+    label: "avg_order_value"
+    description: "The avg order value for a given period"
+    type: simple
+    type_params:
+      measure: avg_order_value
+  - name: "max_order_value"
+    label: "max_order_value"
+    description: "The max order value for a given period"
+    type: simple
+    type_params:
+      measure: max_order_value
+  - name: "order_amount_pct"
+    description: "The ratio of avg order amout to max order amount"
+    label: "order_amount_pct"
+    type: ratio
+    type_params:
+      numerator: avg_order_value
+      denominator: max_order_value
+      
