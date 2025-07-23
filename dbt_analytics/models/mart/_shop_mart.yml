@@ -126,5 +126,17 @@ models:
         description: The status of the order
       - name: payment_status
         description: The payment status of the order
-  
-        
+  - name: fct_orders
+    description: Simple customer's orders data
+    time_spine:
+      standard_granularity_column: order_date
+    columns:
+      - name: order_id
+        description: The unique identifier of the order
+      - name: customer_id
+        description: The unique identifier of the customer
+      - name: order_date
+        description: The date the order was placed
+        granularity: day
+      - name: amount
+        description: The total value of the order
