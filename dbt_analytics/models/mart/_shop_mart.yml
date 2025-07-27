@@ -27,6 +27,8 @@ models:
         description: The most recent date the customer placed their order
       - name: order_count
         description: The number of orders the customer has already placed
+        tests:
+          - assert_column_is_greater_than_zero
       - name: non_returned_order_count
         description: The number of successful orders
       - name: total_lifetime_value

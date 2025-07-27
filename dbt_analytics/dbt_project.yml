@@ -39,11 +39,13 @@ models:
   dbt_refactoring:
     # Applies to all files under models/example/
     
+    # dbt_meta_testing package
     # all models should have unique and not_null test
     # +required_tests: {"unique.*|not_null": 2}
     legacy:
       +materialized: table
     mart:
       +materialized: table
+      # dbt_meta_testing package
       # require the table in mart to have relationship defined
       # +required_tests: {"relationship.*": 1} 
