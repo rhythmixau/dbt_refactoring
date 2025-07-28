@@ -9,8 +9,18 @@ models:
       - name: customer_id
         description: The unique identifier of a customer
         tests:
-          - not_null
-          - unique
+          - not_null:
+              config:
+                severity: warn # overwrite the default behaviour
+                error_if: ">30" # error if more than 30 records have null
+                warn_if: ">10" # warn if more than 10 records have null
+
+          - unique:
+              config:
+                limit: 10 # limiting the number problematic rows, to save compute
+                store_failures: true # to store the values somewhere in the database
+                schema: test_failures # persist the errors in a different schema
+
       - name: customer_id
         description: The unique identifier of the customer
       - name: full_name
@@ -27,6 +37,8 @@ models:
         description: The most recent date the customer placed their order
       - name: order_count
         description: The number of orders the customer has already placed
+        tests:
+          - assert_column_is_greater_than_zero
       - name: non_returned_order_count
         description: The number of successful orders
       - name: total_lifetime_value
