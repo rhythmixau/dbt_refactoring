@@ -1,3 +1,8 @@
+-- Change the default behaviour of the default behaviour
+{{
+    config(severity='warn')
+}}
+
 SELECT 
     order_count
 FROM {{ ref('customer_order_history') }}

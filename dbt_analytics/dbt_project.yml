@@ -49,3 +49,8 @@ models:
       # dbt_meta_testing package
       # require the table in mart to have relationship defined
       # +required_tests: {"relationship.*": 1} 
+
+# tests:
+#   dbt_refactoring:
+#     +severity: warn
+#     +store_failures: true
